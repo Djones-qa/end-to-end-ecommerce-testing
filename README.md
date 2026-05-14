@@ -152,8 +152,7 @@ The GitHub Actions workflow (`.github/workflows/playwright.yml`) runs on every p
 
 - Parallel matrix across **Chromium**, **Firefox**, and **WebKit**
 - 2 retries on failure in CI
-- Uploads HTML reports and Allure results as artifacts (14-day retention)
-- Publishes Allure report to GitHub Pages on merge to `main`
+- Uploads Playwright HTML reports and Allure results as downloadable artifacts (14-day retention)
 - Nightly scheduled run at 02:00 UTC
 
 ---
