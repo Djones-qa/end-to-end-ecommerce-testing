@@ -1,8 +1,21 @@
 # End-to-End E-Commerce Testing
 
-A production-quality Playwright test suite for an e-commerce application, built to demonstrate real-world QA engineering skills: Page Object Model, API mocking, cross-browser testing, and CI/CD integration.
+![Playwright Tests](https://github.com/Djones-qa/end-to-end-ecommerce-testing/actions/workflows/playwright.yml/badge.svg)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue?logo=typescript)
+![Playwright](https://img.shields.io/badge/Playwright-1.52-green?logo=playwright)
+![License](https://img.shields.io/badge/license-MIT-lightgrey)
 
-**Target app:** [SauceDemo](https://www.saucedemo.com) — a purpose-built demo e-commerce site.
+A production-quality end-to-end test suite for an e-commerce application, built to demonstrate real-world QA engineering skills.
+
+**Target app:** [SauceDemo](https://www.saucedemo.com) — a purpose-built demo e-commerce site used across the industry for QA practice.
+
+**What this repo showcases:**
+- Page Object Model (POM) with TypeScript
+- Custom Playwright fixtures for shared authenticated sessions
+- API mocking via Playwright route interception
+- Cross-browser testing (Chromium, Firefox, WebKit + mobile)
+- CI/CD with GitHub Actions — parallel browser matrix, artifact uploads, nightly runs
+- Allure reporting with GitHub Pages deployment
 
 ---
 
@@ -22,8 +35,8 @@ A production-quality Playwright test suite for an e-commerce application, built 
 ## Project Structure
 
 ```
-├── pages/                  # Page Object Model classes
-│   ├── BasePage.ts
+├── pages/                    # Page Object Model classes
+│   ├── BasePage.ts           # Shared helpers (navigate, waitForURL, etc.)
 │   ├── LoginPage.ts
 │   ├── InventoryPage.ts
 │   ├── ProductDetailPage.ts
@@ -31,22 +44,22 @@ A production-quality Playwright test suite for an e-commerce application, built 
 │   ├── CheckoutPage.ts
 │   └── OrderConfirmationPage.ts
 ├── tests/
-│   ├── ui/                 # UI end-to-end tests
+│   ├── ui/                   # UI end-to-end tests
 │   │   ├── login.spec.ts
 │   │   ├── inventory.spec.ts
 │   │   ├── product-detail.spec.ts
 │   │   ├── cart.spec.ts
 │   │   └── checkout.spec.ts
-│   └── api/                # API mocking tests
+│   └── api/                  # API mocking / route interception tests
 │       └── cart-api.spec.ts
-├── fixtures/               # Custom Playwright fixtures
-│   └── index.ts
-├── test-data/              # Typed test data
+├── fixtures/                 # Custom Playwright fixtures
+│   └── index.ts              # authenticatedPage — pre-logged-in session
+├── test-data/                # Typed test data (no magic strings)
 │   ├── users.ts
 │   └── products.ts
-├── utils/                  # Shared helpers
+├── utils/                    # Shared helpers
 │   └── helpers.ts
-├── .github/workflows/      # CI/CD pipeline
+├── .github/workflows/        # CI/CD pipeline
 │   └── playwright.yml
 └── playwright.config.ts
 ```
@@ -71,7 +84,7 @@ npx playwright install
 
 ```bash
 cp .env.example .env
-# Edit .env with your own values if needed
+# Edit .env if you want to override BASE_URL or credentials
 ```
 
 ### Run all tests
@@ -121,24 +134,25 @@ npm run allure:open
 
 ## Test Coverage
 
-| Area | Tests |
-|---|---|
-| Login | Valid login, locked user, empty fields, invalid credentials, logout |
-| Inventory | Page load, product count, all 4 sort options, add/remove from cart |
-| Product Detail | Details display, price, add/remove cart, back navigation |
-| Cart | Item display, remove item, continue shopping, proceed to checkout |
-| Checkout | Field validation, overview totals, order completion, back to home |
-| API Mocking | Route interception, error handling, localStorage persistence |
+| Area | # Tests | What's covered |
+|---|---|---|
+| Login | 7 | Valid login, locked user, empty fields, invalid credentials, logout |
+| Inventory | 9 | Page load, product count, all 4 sort options, add/remove from cart, navigation |
+| Product Detail | 5 | Details display, correct price, add/remove cart, back navigation |
+| Cart | 6 | Item display, remove item, continue shopping, proceed to checkout |
+| Checkout | 8 | Field validation, overview totals, order completion, back to home |
+| API Mocking | 4 | Route interception, error handling, localStorage persistence |
+| **Total** | **39** | |
 
 ---
 
 ## CI/CD
 
-The GitHub Actions workflow runs on every push to `main`/`develop` and on pull requests:
+The GitHub Actions workflow (`.github/workflows/playwright.yml`) runs on every push to `main`/`develop` and on pull requests:
 
 - Parallel matrix across **Chromium**, **Firefox**, and **WebKit**
-- Retries on failure (2 retries in CI)
-- Uploads HTML reports and Allure results as artifacts
+- 2 retries on failure in CI
+- Uploads HTML reports and Allure results as artifacts (14-day retention)
 - Publishes Allure report to GitHub Pages on merge to `main`
 - Nightly scheduled run at 02:00 UTC
 
@@ -148,8 +162,16 @@ The GitHub Actions workflow runs on every push to `main`/`develop` and on pull r
 
 **Page Object Model** — Each page is a class with typed locators and action methods. Tests read like plain English and are insulated from selector changes.
 
-**Custom fixtures** — The `authenticatedPage` fixture handles login once and injects a ready-to-use `InventoryPage`, keeping test bodies focused on the scenario under test.
+**Custom fixtures** — The `authenticatedPage` fixture handles login once and injects a ready-to-use `InventoryPage`, keeping test bodies focused on the scenario under test rather than setup boilerplate.
 
-**API mocking** — Playwright's `page.route()` intercepts network requests at the browser level, enabling tests for error states and edge cases without a real API.
+**API mocking** — Playwright's `page.route()` intercepts network requests at the browser level, enabling tests for error states and edge cases without a real backend.
 
-**Typed test data** — Products and users are defined as TypeScript interfaces, so tests reference `products.backpack.name` instead of magic strings.
+**Typed test data** — Products and users are defined as TypeScript interfaces, so tests reference `products.backpack.name` instead of magic strings scattered across files.
+
+**Environment variables** — Credentials and base URL are read from `.env` / CI secrets, so nothing sensitive is hardcoded.
+
+---
+
+## License
+
+MIT
