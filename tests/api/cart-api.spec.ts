@@ -74,16 +74,17 @@ test.describe('Cart API Mocking', () => {
     // Add item to cart
     await page.locator('.inventory_item').first().locator('button').click();
 
-    // Navigate away and back
-    await page.goto('/');
-    await page.fill('[data-test="username"]', 'standard_user');
-    await page.fill('[data-test="password"]', 'secret_sauce');
-    await page.click('[data-test="login-button"]');
+    const badgeBefore = page.locator('.shopping_cart_badge');
+    await expect(badgeBefore).toHaveText('1');
+
+    // Navigate to product detail and back — cart should persist within the same session
+    await page.locator('.inventory_item_name').first().click();
+    await page.waitForURL('**/inventory-item.html**');
+    await page.goBack();
     await page.waitForURL('**/inventory.html');
 
-    // Cart badge should still show 1 (persisted in session)
-    const badge = page.locator('.shopping_cart_badge');
-    // SauceDemo resets cart on re-login, so badge should not be visible
-    await expect(badge).not.toBeVisible();
+    // Badge should still show 1 after in-session navigation
+    const badgeAfter = page.locator('.shopping_cart_badge');
+    await expect(badgeAfter).toHaveText('1');
   });
 });
