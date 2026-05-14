@@ -176,6 +176,7 @@ The GitHub Actions workflow (`.github/workflows/playwright.yml`) runs on every p
 
 **D. Jones** — QA Engineer
 - GitHub: [@Djones-qa](https://github.com/Djones-qa)
+- LinkedIn: [Darrius Jones](https://www.linkedin.com/in/darrius-jones-28226b350/)
 
 ---
 
