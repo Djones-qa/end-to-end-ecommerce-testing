@@ -172,6 +172,13 @@ The GitHub Actions workflow (`.github/workflows/playwright.yml`) runs on every p
 
 ---
 
+## Author
+
+**D. Jones** — QA Engineer
+- GitHub: [@Djones-qa](https://github.com/Djones-qa)
+
+---
+
 ## License
 
 MIT
